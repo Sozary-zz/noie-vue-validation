@@ -58,7 +58,9 @@
             ></v-col>
           </v-row>
 
-          <v-btn color="primary" @click="validateInfo"> Continue </v-btn>
+          <v-btn color="primary" @click="validateInfo" :loading="loadValidate">
+            Continue
+          </v-btn>
         </v-stepper-content>
 
         <v-stepper-content step="2">
@@ -80,6 +82,7 @@ export default {
   data: () => ({
     step: 1,
     errorMessages: [],
+    loadValidate: false,
     error: false,
     cities: ["Copenhagen", "Aarhus", "Odense", "Aalborg"],
   }),
@@ -111,11 +114,15 @@ export default {
   },
   methods: {
     validateInfo() {
+      this.loadValidate = true;
+      this.error = false;
+
       apiValidateInfo({
         email: this.email,
         zip: this.zip,
         city: this.city,
       }).then((response) => {
+        this.loadValidate = false;
         if (response.data.statusCode !== 200) {
           this.error = true;
           this.errorMessages = response.data.messages;
