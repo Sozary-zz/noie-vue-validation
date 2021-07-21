@@ -29,26 +29,31 @@ function validateZipAndCity(zip, city) {
 exports.handler = async (event) => {
   const response = {
     statusCode: null,
-    message: "",
+    messages: [],
   };
 
   for (const elem of ["email", "city", "zip"]) {
     if (!(elem in event)) {
       response.statusCode = 403;
-      response.message = `Field ${elem} not provided`;
-      return response;
+      response.messages.push(`Field ${elem} not provided`);
     }
+  }
+
+  if (response.statusCode === 403) {
+    return response;
   }
 
   if (!validateEmail(event.email)) {
     response.statusCode = 403;
-    response.message = `Wrong email format`;
-    return response;
+    response.messages.push(`Wrong email format`);
   }
 
   if (!validateZipAndCity(event.zip, event.city)) {
     response.statusCode = 403;
-    response.message = `Unknown city or zip code mismatch`;
+    response.messages.push(`Unknown city or zip code mismatch`);
+  }
+
+  if (response.statusCode === 403) {
     return response;
   }
 
