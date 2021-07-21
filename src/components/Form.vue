@@ -12,9 +12,17 @@
 
         <v-divider></v-divider>
       </v-stepper-header>
-
       <v-stepper-items>
         <v-stepper-content step="1">
+          <transition name="fade">
+            <v-alert border="bottom" color="red" dark v-if="error">
+              <ul>
+                <li v-for="(message, index) of errorMessages" :key="index">
+                  {{ message }}
+                </li>
+              </ul>
+            </v-alert>
+          </transition>
           <v-row>
             <v-col :cols="5">
               <v-text-field
@@ -28,7 +36,7 @@
             </v-col>
           </v-row>
 
-          <v-row class="mb-7 mt-1">
+          <v-row class="mb-3 mt-1">
             <v-col :cols="5">
               <v-text-field
                 placeholder="Zip code"
@@ -49,15 +57,14 @@
               ></v-autocomplete
             ></v-col>
           </v-row>
+
           <v-btn color="primary" @click="validateInfo"> Continue </v-btn>
         </v-stepper-content>
 
         <v-stepper-content step="2">
-          <v-card class="mb-12" color="primary" height="200px"></v-card>
-
-          <v-btn color="primary" @click="step = 3"> Continue </v-btn>
-
-          <v-btn text> Cancel </v-btn>
+          <div class="text-center">
+            <h3>Congratulation, everything looks fine :)</h3>
+          </div>
         </v-stepper-content>
       </v-stepper-items>
     </v-stepper>
@@ -72,6 +79,8 @@ export default {
 
   data: () => ({
     step: 1,
+    errorMessages: [],
+    error: false,
     cities: ["Copenhagen", "Aarhus", "Odense", "Aalborg"],
   }),
   computed: {
@@ -107,9 +116,24 @@ export default {
         zip: this.zip,
         city: this.city,
       }).then((response) => {
-        console.log(response);
+        if (response.data.statusCode !== 200) {
+          this.error = true;
+          this.errorMessages = response.data.messages;
+        } else {
+          this.step = 2;
+        }
       });
     },
   },
 };
 </script>
+<style lang="css" scoped>
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.5s;
+}
+.fade-enter,
+.fade-leave-to {
+  opacity: 0;
+}
+</style>
