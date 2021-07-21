@@ -1,5 +1,5 @@
-import AxiosRestV4 from "./default";
+import AxiosAPI from "./default";
 
-export const getAllIntegrations = () => {
-  return AxiosRestV4().get(`/automations/get_all`);
+export const apiValidateInfo = (info) => {
+  return AxiosAPI().post(`/validate-info`, info);
 };

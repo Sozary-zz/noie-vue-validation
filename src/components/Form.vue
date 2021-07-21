@@ -49,13 +49,7 @@
               ></v-autocomplete
             ></v-col>
           </v-row>
-          <v-btn
-            color="primary"
-            @click="validateInfo"
-            :disabled="!infoValidated"
-          >
-            Continue
-          </v-btn>
+          <v-btn color="primary" @click="validateInfo"> Continue </v-btn>
         </v-stepper-content>
 
         <v-stepper-content step="2">
@@ -71,13 +65,14 @@
 </template>
 
 <script>
+import { apiValidateInfo } from "@/services/api";
+
 export default {
   name: "Form",
 
   data: () => ({
     step: 1,
     cities: ["Copenhagen", "Aarhus", "Odense", "Aalborg"],
-    infoValidated: false,
   }),
   computed: {
     email: {
@@ -106,7 +101,15 @@ export default {
     },
   },
   methods: {
-    validateInfo() {},
+    validateInfo() {
+      apiValidateInfo({
+        email: this.email,
+        zip: this.zip,
+        city: this.city,
+      }).then((response) => {
+        console.log(response);
+      });
+    },
   },
 };
 </script>
