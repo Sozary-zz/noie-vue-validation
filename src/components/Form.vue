@@ -31,6 +31,7 @@
                 placeholder="Email"
                 color="primary"
                 outlined
+                :error="emailError"
                 v-model="email"
               ></v-text-field>
             </v-col>
@@ -44,6 +45,7 @@
                 color="primary"
                 outlined
                 v-model="zip"
+                :error="cityOrZipError"
               ></v-text-field
             ></v-col>
             <v-col :cols="5">
@@ -54,6 +56,7 @@
                 :items="cities"
                 outlined
                 v-model="city"
+                :error="cityOrZipError"
               ></v-autocomplete
             ></v-col>
           </v-row>
@@ -87,6 +90,12 @@ export default {
     cities: ["Copenhagen", "Aarhus", "Odense", "Aalborg"],
   }),
   computed: {
+    emailError() {
+      return this.error && this.errorMessages.find((m) => m.includes("email"));
+    },
+    cityOrZipError() {
+      return this.error && this.errorMessages.find((m) => m.includes("city"));
+    },
     email: {
       get() {
         return this.$store.getters.getEmail;
